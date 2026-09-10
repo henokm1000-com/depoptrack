@@ -82,7 +82,7 @@ function parseSale(text, headers){
 app.post('/api/gmail/sync',async(req,res)=>{
   try{
     const c=gmailClient();if(!c)return res.status(401).json({error:'Gmail is not connected. Click Connect Gmail first.'});
-    const q=req.body?.query || 'newer_than:30d (Depop OR from:depop.com)';
+    const q=req.body?.query || 'newer_than:30d (Depop OR from:depop.com) in:anywhere';
     const list=await c.gmail.users.messages.list({userId:'me',q,maxResults:50});
     const orders=[];
     for(const m of list.data.messages||[]){
@@ -106,5 +106,5 @@ app.post('/api/fulfillment/submit',async(req,res)=>{
   }catch(e){res.status(500).json({error:e.message});}
 });
 
-app.get('*',(req,res)=>res.sendFile(path.join(ROOT,'public/index.html')));
+app.get('/*splat',(req,res)=>res.sendFile(path.join(ROOT,'public/index.html')));
 app.listen(PORT,()=>console.log(`Depop Tracker running at http://localhost:${PORT}`));
